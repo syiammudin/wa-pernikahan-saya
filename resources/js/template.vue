@@ -162,8 +162,8 @@ export default {
         this.showForm = false;
         this.form = {};
         this.$forceUpdate;
+        this.getData();
       });
-      this.getData();
     },
     edit(data) {
       this.form = JSON.parse(JSON.stringify(data));

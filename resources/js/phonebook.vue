@@ -85,11 +85,11 @@ export default {
           showClose: true,
           duration: 3000,
         });
+        this.getData();
         this.showForm = false;
         this.form = {};
         this.$forceUpdate;
       });
-      this.getData();
     },
     edit(data) {
       this.form = JSON.parse(JSON.stringify(data));

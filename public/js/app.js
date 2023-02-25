@@ -7023,7 +7023,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     }
   },
-  created: function created() {
+  mounted: function mounted() {
     var _this2 = this;
     this.getData();
     setInterval(function () {
@@ -7069,11 +7069,11 @@ __webpack_require__.r(__webpack_exports__);
           showClose: true,
           duration: 3000
         });
+        _this2.getData();
         _this2.showForm = false;
         _this2.form = {};
         _this2.$forceUpdate;
       });
-      this.getData();
     },
     edit: function edit(data) {
       this.form = JSON.parse(JSON.stringify(data));
@@ -7263,8 +7263,8 @@ __webpack_require__.r(__webpack_exports__);
         _this2.showForm = false;
         _this2.form = {};
         _this2.$forceUpdate;
+        _this2.getData();
       });
-      this.getData();
     },
     edit: function edit(data) {
       this.form = JSON.parse(JSON.stringify(data));
