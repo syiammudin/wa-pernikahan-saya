@@ -19,6 +19,7 @@ class logMessageController extends Controller
             ->when($request->status, function ($q) use ($request) {
                 return $q->whereIn('status', $request->status);
             })
+            ->where('user_id', auth()->user()->id)
             ->orderBy($request->sort ?: 'id', $request->order == 'descending' ? 'desc' : 'asc');
 
         return $request->list == 'true' ?  $log->get() : $log->paginate($request->pageSize);

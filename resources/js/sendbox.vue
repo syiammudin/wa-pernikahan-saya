@@ -9,7 +9,6 @@
           placeholder="Pilih Template Kosongkan jika tidak menggunakan template"
           clearable
           filterable
-          @change="setTemplate"
         >
           <el-option
             v-for="item in template"
@@ -101,21 +100,32 @@ export default {
       template: [],
     };
   },
+  watch: {
+    "form.template"(v) {
+      const template = this.template.find((f) => f.id == v);
+      if (template) {
+        this.form.text = template.message;
+        this.form.path = template.path;
+        this.form.url = template.url;
+        this.form.filename = template.filename;
+        this.form.mime = template.mime;
+        this.form.size = template.size;
+        this.$forceUpdate();
+      } else {
+        this.form.text = "";
+        this.form.path = "";
+        this.form.url = "";
+        this.form.filename = "";
+        this.form.mime = "";
+        this.form.size = "";
+        this.$forceUpdate();
+      }
+    },
+  },
   mounted() {
     this.getTemplate();
   },
   methods: {
-    setTemplate() {
-      const template = this.template.find((f) => f.id == this.form.template);
-
-      this.form.text = template.message;
-      this.form.path = template.path;
-      this.form.url = template.url;
-      this.form.filename = template.filename;
-      this.form.mime = template.mime;
-      this.form.size = template.size;
-      this.$forceUpdate();
-    },
     getTemplate() {
       axios.get("templateMessage").then((r) => {
         this.template = r.data;
