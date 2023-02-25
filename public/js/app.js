@@ -7028,7 +7028,7 @@ __webpack_require__.r(__webpack_exports__);
     this.getData();
     setInterval(function () {
       _this2.getData();
-    }, 20000);
+    }, 30000);
   }
 });
 

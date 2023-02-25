@@ -28,7 +28,7 @@ export default {
     this.getData();
     setInterval(() => {
       this.getData();
-    }, 20000);
+    }, 30000);
   },
 };
 </script>
