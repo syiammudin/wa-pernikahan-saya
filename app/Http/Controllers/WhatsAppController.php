@@ -13,14 +13,17 @@ class WhatsAppController extends Controller
 {
     public function connect()
     {
-        $find = Http::get(env('URL_WA_SERVER') . '/sessions/find/' . Auth::user()->name);
+        $find = Http::get(env('URL_WA_SERVER') . '/sessions/status/' . Auth::user()->name);
         $cek = json_decode($find->getBody());
-        if ($cek->message == "Session found.") {
-            $image = asset('image/connect.png');
+        if ($cek->success && isset($cek->data->status)) {
+            if ($cek->data->status == 'authenticated') {
+                $image = asset('image/connect.png');
+            } else {
+                $find = Http::delete(env('URL_WA_SERVER') . '/sessions/delete/' . Auth::user()->name);
+                $image = $this->getQR();
+            }
         } else {
-            $response = Http::post(env('URL_WA_SERVER') . '/sessions/add', ['id' => Auth::user()->name, 'isLegacy' => 'false']);
-            $res = json_decode($response->getBody());
-            $image = $res->data->qr;
+            $image = $this->getQR();
         }
 
         $data = [];
@@ -28,6 +31,14 @@ class WhatsAppController extends Controller
         $data['image'] = $image;
 
         return $data;
+    }
+    public function getQR()
+    {
+        $response = Http::post(env('URL_WA_SERVER') . '/sessions/add', ['id' => Auth::user()->name, 'isLegacy' => 'false']);
+        $res = json_decode($response->getBody());
+        $image = $res->data->qr;
+
+        return $image;
     }
 
     public function sendWa(Request $request)
