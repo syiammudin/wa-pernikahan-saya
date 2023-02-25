@@ -7071,6 +7071,7 @@ __webpack_require__.r(__webpack_exports__);
         });
         _this2.showForm = false;
         _this2.form = {};
+        _this2.$forceUpdate;
       });
       this.getData();
     },
@@ -7193,6 +7194,9 @@ __webpack_require__.r(__webpack_exports__);
           showClose: true,
           duration: 3000
         });
+        _this2.form = {
+          text: ""
+        };
       })["finally"](function () {
         return _this2.loading = false;
       });
@@ -7258,6 +7262,7 @@ __webpack_require__.r(__webpack_exports__);
         });
         _this2.showForm = false;
         _this2.form = {};
+        _this2.$forceUpdate;
       });
       this.getData();
     },

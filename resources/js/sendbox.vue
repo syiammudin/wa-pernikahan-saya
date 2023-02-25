@@ -146,6 +146,7 @@ export default {
             showClose: true,
             duration: 3000,
           });
+          this.form = { text: "" };
         })
         .finally(() => (this.loading = false));
     },

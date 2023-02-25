@@ -161,6 +161,7 @@ export default {
         });
         this.showForm = false;
         this.form = {};
+        this.$forceUpdate;
       });
       this.getData();
     },
