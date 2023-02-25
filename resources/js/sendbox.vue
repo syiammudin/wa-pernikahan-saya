@@ -15,7 +15,7 @@
             v-for="item in template"
             :key="item.id"
             :label="item.name"
-            :value="item"
+            :value="item.id"
           >
           </el-option>
         </el-select>
@@ -106,12 +106,14 @@ export default {
   },
   methods: {
     setTemplate() {
-      this.form.text = JSON.parse(JSON.stringify(this.form.template.message));
-      this.form.path = this.form.template.path;
-      this.form.url = this.form.template.url;
-      this.form.filename = this.form.template.filename;
-      this.form.mime = this.form.template.mime;
-      this.form.size = this.form.template.size;
+      const template = this.template.find((f) => f.id == this.form.template);
+
+      this.form.text = template.message;
+      this.form.path = template.path;
+      this.form.url = template.url;
+      this.form.filename = template.filename;
+      this.form.mime = template.mime;
+      this.form.size = template.size;
       this.$forceUpdate();
     },
     getTemplate() {

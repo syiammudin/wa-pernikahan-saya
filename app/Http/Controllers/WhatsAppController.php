@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendBoxJobs;
+use App\Models\logMessage;
 use App\Models\PhoneBook;
 use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\Request;
@@ -45,41 +47,44 @@ class WhatsAppController extends Controller
 
     public function sendWa(Request $request)
     {
+        $data = DB::transaction(function ()  use ($request) {
+            $phonebox = PhoneBook::where('user_id', auth()->user()->id)->get();
+            $data = [];
+            $no = 0;
+            foreach ($phonebox as $key => $value) {
+                $cek_number = substr($value->phone, 0, 1);
+                if ($cek_number == "0") {
+                    $number = '62' . substr($value->phone, 1);
+                } else {
+                    $number = $value->phone;
+                }
 
-        $phonebox = PhoneBook::where('user_id', auth()->user()->id)->get();
-        $data = [];
+                $nameUrl = str_replace(' ', '%20', $value->name);
+                $text = str_replace(['<<name>>', '<<name_url>>'], [$value->name, $nameUrl], $request->text);
 
-        foreach ($phonebox as $key => $value) {
-            $cek_number = substr($value->phone, 0, 1);
-            if ($cek_number == "0") {
-                $number = '62' . substr($value->phone, 1);
-            } else {
-                $number = $value->phone;
+                if ($request->url == null) {
+                    $body = [
+                        'text' => $text
+                    ];
+                } else {
+                    $body = [
+                        'image' => ['url' => $request->url],
+                        'caption' => $text
+                    ];
+                }
+
+
+                dispatch(new SendBoxJobs(auth()->user(), $number, $body, $value->name, $text))->delay(now()->addSeconds($no));
+                $no = $no + 20;
             }
-
-            $nameUrl = str_replace(' ', '%20', $value->name);
-            $text = str_replace(['<<name>>', '<<name_url>>'], [$value->name, $nameUrl], $request->text);
-
-            if ($request->image != null) {
-                $body = [
-                    'text' => $text
-                ];
-            } else {
-                $body = [
-                    'image' => ['url' => $request->url],
-                    'caption' => $text
-                ];
-            }
-
-            $response = Http::post(env('URL_WA_SERVER') . '/chats/send?id=' . auth()->user()->name, [
-                'receiver' => "$number",
-                'message' => $body
-            ]);
-
-            $res = json_decode($response->getBody());
-            $data[] = ['status' => $res->success, 'name' => $value->name, 'number' => $number];
-        }
+            return $no;
+            return $data;
+        });
 
         return ['message' => 'Success', 'data' => $data];
+    }
+    public function logoutWhatsapp()
+    {
+        Http::delete(env('URL_WA_SERVER') . '/sessions/delete/' . auth()->user()->name);
     }
 }

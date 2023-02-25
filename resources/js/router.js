@@ -25,6 +25,11 @@ const router = new VueRouter({
             name: 'template',
             component: require('./template').default
         },
+        {
+            path: '/history',
+            name: 'log_message',
+            component: require('./log_message').default
+        },
        
     ]
 })

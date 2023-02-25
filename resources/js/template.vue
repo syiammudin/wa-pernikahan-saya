@@ -108,6 +108,7 @@
           class="mt-2"
           :on-error="handleUploadFileError"
           :on-success="handleUploadFileSuccess"
+          :on-change="handleChange"
           :headers="{ 'X-Requested-With': 'XMLHttpRequest' }"
           :multiple="false"
           with-credentials
@@ -171,6 +172,9 @@ export default {
         duration: 10000,
       });
     },
+    handleChange(file, fileList) {
+      this.fileList = fileList.slice(-1);
+    },
     setText(tag) {
       let textArea = document.getElementById("message");
       let text = textArea.value;
@@ -214,12 +218,14 @@ export default {
     },
     edit(data) {
       this.form = JSON.parse(JSON.stringify(data));
-      this.fileList = [
-        {
-          filename: this.form.filename,
-          url: this.form.url,
-        },
-      ];
+      if (this.form.url != null) {
+        this.fileList = [
+          {
+            filename: this.form.filename,
+            url: this.form.url,
+          },
+        ];
+      }
       this.showForm = true;
     },
     handleClose() {

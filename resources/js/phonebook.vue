@@ -1,14 +1,27 @@
 <template >
   <div>
     <el-card shadow="always" :body-style="{ padding: '20px' }">
-      <div slot="header">
-        <span>Phone Boox</span>
-        <el-button
-          type="text"
-          size="small"
-          icon="el-icon-plus"
-          @click="showForm = true"
-        ></el-button>
+      <div slot="header" class="d-flex justify-content-between">
+        <div>
+          <span>Phone Boox</span>
+          <el-button
+            type="text"
+            size="small"
+            icon="el-icon-plus"
+            @click="showForm = true"
+          ></el-button>
+        </div>
+        <div class="text-right">
+          <el-button
+            type="success"
+            size="mini"
+            @click="importDialog = true"
+            plain
+            icon="fa fa-file-excel-o"
+          >
+            import form excel
+          </el-button>
+        </div>
       </div>
       <table class="table table-bordered">
         <tr>
@@ -60,6 +73,35 @@
         >
       </span>
     </el-dialog>
+
+    <el-dialog
+      title="Import Contact From Excel"
+      :visible.sync="importDialog"
+      width="30%"
+      @close="importDialog = false"
+    >
+      <div class="text-center">
+        <el-button
+          slot="trigger"
+          @click="clickHandler"
+          size="small"
+          type="primary"
+        >
+          Select file Excel
+        </el-button>
+        <div class="el-upload__tip" slot="tip">File Harus Excel</div>
+        {{ this.file.name }}
+      </div>
+      <span slot="footer">
+        <el-button @click="importDialog = false">Cancel</el-button>
+        <el-button
+          type="primary"
+          @click="importData()"
+          v-loading.fullscreen.lock="loading"
+          >Import</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -69,9 +111,46 @@ export default {
       data: [],
       showForm: false,
       form: {},
+      importDialog: false,
+      loading: false,
+      file: [],
+      uploadPercentage: 0,
     };
   },
   methods: {
+    clickHandler(ev) {
+      const el = document.createElement("input");
+      el.type = "file";
+      el.multiple = false;
+      el.accept = ".xls, .xlsx";
+
+      el.addEventListener("change", (e) => {
+        for (let i = 0; i < e.target.files.length; i++) {
+          this.file = e.target.files[i];
+        }
+      });
+
+      el.click();
+    },
+    importData() {
+      const config = {
+        headers: { "content-type": "multipart/form-data" },
+        onUploadProgress: function (progressEvent) {
+          this.uploadPercentage = Math.round(
+            (progressEvent.loaded / progressEvent.total) * 100
+          );
+        }.bind(this),
+      };
+      this.loading = true;
+      let data = new FormData();
+      data.append("file", this.file);
+      axios.post("importPhonbook", data, config).then((r) => {
+        this.importDialog = false;
+        this.file = [];
+        this.getData();
+        this.loading = false;
+      });
+    },
     getData() {
       axios.get("phoneBook").then((r) => {
         this.data = r.data;

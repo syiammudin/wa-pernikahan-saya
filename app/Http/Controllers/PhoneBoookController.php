@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\PhoneBookImport;
 use App\Models\PhoneBook;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PhoneBoookController extends Controller
 {
@@ -40,5 +42,12 @@ class PhoneBoookController extends Controller
         $phoneBook->delete();
 
         return ['message' => 'delete success'];
+    }
+
+    public function importPhonbook(Request $request)
+    {
+        Excel::import(new PhoneBookImport, request()->file('file'));
+
+        return ['message' => 'Phone book has been uploaded'];
     }
 }

@@ -7,6 +7,7 @@
 require('./bootstrap');
 
 window.axios = require('axios');
+window.moment = require('moment');
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 import Vue from 'vue'
@@ -20,6 +21,12 @@ import locale from 'element-ui/lib/locale/lang/en'
 Vue.use(ElementUI, {
     locale
 });
+
+
+Vue.filter('formatDate', function (v) {
+    return v ? moment(v).format('DD MMMM YYYY H:mm:ss') : ''
+})
+
 
 
 const app = new Vue({

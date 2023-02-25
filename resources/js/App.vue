@@ -23,6 +23,7 @@
         <el-menu-item index="/phone-book">Phone Book</el-menu-item>
         <el-menu-item index="/send-box">Send Box Wa</el-menu-item>
         <el-menu-item index="/template-message">Template</el-menu-item>
+        <el-menu-item index="/history">History</el-menu-item>
       </el-menu>
       <router-view />
     </el-card>

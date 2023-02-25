@@ -10,7 +10,7 @@ class TemplateController extends Controller
 {
     public function index()
     {
-        return TemplateMessage::get();
+        return TemplateMessage::where('user_id', auth()->user()->id)->get();
     }
 
     public function store(Request $request)
