@@ -60,10 +60,16 @@ class WhatsAppController extends Controller
             $nameUrl = str_replace(' ', '%20', $value->name);
             $text = str_replace(['<<name>>', '<<name_url>>'], [$value->name, $nameUrl], $request->text);
 
-            $body = [
-                'image' => ['url' => 'https://indoinvite.com/nikah/upload/10411/1673027674foto_berdua.png'],
-                'caption' => $text
-            ];
+            if ($request->image != null) {
+                $body = [
+                    'text' => $text
+                ];
+            } else {
+                $body = [
+                    'image' => ['url' => $request->url],
+                    'caption' => $text
+                ];
+            }
 
             $response = Http::post(env('URL_WA_SERVER') . '/chats/send?id=' . auth()->user()->name, [
                 'receiver' => "$number",

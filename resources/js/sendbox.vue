@@ -15,7 +15,7 @@
             v-for="item in template"
             :key="item.id"
             :label="item.name"
-            :value="item.message"
+            :value="item"
           >
           </el-option>
         </el-select>
@@ -73,6 +73,14 @@
         :autosize="{ minRows: 20, maxRows: 25 }"
       >
       </el-input>
+      <br />
+      <img
+        class="mt-2"
+        v-if="form.url != null"
+        width="200px"
+        :src="form.url"
+        alt=""
+      />
       <div class="text-right mt-2">
         <el-button
           type="primary"
@@ -98,7 +106,12 @@ export default {
   },
   methods: {
     setTemplate() {
-      this.form.text = JSON.parse(JSON.stringify(this.form.template));
+      this.form.text = JSON.parse(JSON.stringify(this.form.template.message));
+      this.form.path = this.form.template.path;
+      this.form.url = this.form.template.url;
+      this.form.filename = this.form.template.filename;
+      this.form.mime = this.form.template.mime;
+      this.form.size = this.form.template.size;
       this.$forceUpdate();
     },
     getTemplate() {

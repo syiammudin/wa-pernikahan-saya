@@ -12,5 +12,10 @@ class TemplateMessage extends Model
         'user_id',
         'name',
         'message',
+        'url',
+        'size',
+        'mime',
+        'path',
+        'filename'
     ];
 }

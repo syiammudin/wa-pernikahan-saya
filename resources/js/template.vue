@@ -103,6 +103,20 @@
           :autosize="{ minRows: 8, maxRows: 12 }"
         >
         </el-input>
+        <br />
+        <el-upload
+          class="mt-2"
+          :on-error="handleUploadFileError"
+          :on-success="handleUploadFileSuccess"
+          :headers="{ 'X-Requested-With': 'XMLHttpRequest' }"
+          :multiple="false"
+          with-credentials
+          :file-list="fileList"
+          list-type="picture-card"
+          action="upload"
+        >
+          <i class="el-icon-plus"></i>
+        </el-upload>
       </el-form>
 
       <span slot="footer">
@@ -120,10 +134,43 @@ export default {
     return {
       data: [],
       showForm: false,
-      form: {},
+      form: {
+        name: "",
+      },
+      fileList: [],
     };
   },
   methods: {
+    handleUploadFileSuccess(res, file, fileList) {
+      this.form["path"] = res.path;
+      this.form["url"] = res.url;
+      this.form["filename"] = res.filename;
+      this.form["mime"] = res.mime;
+      this.form["size"] = res.size;
+    },
+    handleUploadFileError(err, file, fileList) {
+      const error = JSON.parse(err.message);
+      let message = "";
+
+      if (err.status == 413) {
+        message = this.$t("Failed to upload document. File too big.");
+      }
+
+      if (err.status == 422) {
+        message = error.errors.avatar[0];
+      }
+
+      if (err.status == 500) {
+        message = error.message;
+      }
+
+      this.$message({
+        message: message,
+        type: "error",
+        showClose: true,
+        duration: 10000,
+      });
+    },
     setText(tag) {
       let textArea = document.getElementById("message");
       let text = textArea.value;
@@ -167,6 +214,12 @@ export default {
     },
     edit(data) {
       this.form = JSON.parse(JSON.stringify(data));
+      this.fileList = [
+        {
+          filename: this.form.filename,
+          url: this.form.url,
+        },
+      ];
       this.showForm = true;
     },
     handleClose() {

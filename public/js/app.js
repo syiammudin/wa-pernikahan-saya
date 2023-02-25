@@ -7149,7 +7149,12 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     setTemplate: function setTemplate() {
-      this.form.text = JSON.parse(JSON.stringify(this.form.template));
+      this.form.text = JSON.parse(JSON.stringify(this.form.template.message));
+      this.form.path = this.form.template.path;
+      this.form.url = this.form.template.url;
+      this.form.filename = this.form.template.filename;
+      this.form.mime = this.form.template.mime;
+      this.form.size = this.form.template.size;
       this.$forceUpdate();
     },
     getTemplate: function getTemplate() {
@@ -7222,10 +7227,39 @@ __webpack_require__.r(__webpack_exports__);
     return {
       data: [],
       showForm: false,
-      form: {}
+      form: {
+        name: ""
+      },
+      fileList: []
     };
   },
   methods: {
+    handleUploadFileSuccess: function handleUploadFileSuccess(res, file, fileList) {
+      this.form["path"] = res.path;
+      this.form["url"] = res.url;
+      this.form["filename"] = res.filename;
+      this.form["mime"] = res.mime;
+      this.form["size"] = res.size;
+    },
+    handleUploadFileError: function handleUploadFileError(err, file, fileList) {
+      var error = JSON.parse(err.message);
+      var message = "";
+      if (err.status == 413) {
+        message = this.$t("Failed to upload document. File too big.");
+      }
+      if (err.status == 422) {
+        message = error.errors.avatar[0];
+      }
+      if (err.status == 500) {
+        message = error.message;
+      }
+      this.$message({
+        message: message,
+        type: "error",
+        showClose: true,
+        duration: 10000
+      });
+    },
     setText: function setText(tag) {
       var textArea = document.getElementById("message");
       var text = textArea.value;
@@ -7268,6 +7302,10 @@ __webpack_require__.r(__webpack_exports__);
     },
     edit: function edit(data) {
       this.form = JSON.parse(JSON.stringify(data));
+      this.fileList = [{
+        filename: this.form.filename,
+        url: this.form.url
+      }];
       this.showForm = true;
     },
     handleClose: function handleClose() {
@@ -7602,7 +7640,7 @@ var render = function render() {
       key: item.id,
       attrs: {
         label: item.name,
-        value: item.message
+        value: item
       }
     });
   }), 1)], 1), _vm._v(" "), _c("el-button-group", [_c("el-button", {
@@ -7685,7 +7723,14 @@ var render = function render() {
       },
       expression: "form.text"
     }
-  }), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _c("br"), _vm._v(" "), _vm.form.url != null ? _c("img", {
+    staticClass: "mt-2",
+    attrs: {
+      width: "200px",
+      src: _vm.form.url,
+      alt: ""
+    }
+  }) : _vm._e(), _vm._v(" "), _c("div", {
     staticClass: "text-right mt-2"
   }, [_c("el-button", {
     directives: [{
@@ -7915,7 +7960,23 @@ var render = function render() {
       },
       expression: "form.message"
     }
-  })], 1), _vm._v(" "), _c("span", {
+  }), _vm._v(" "), _c("br"), _vm._v(" "), _c("el-upload", {
+    staticClass: "mt-2",
+    attrs: {
+      "on-error": _vm.handleUploadFileError,
+      "on-success": _vm.handleUploadFileSuccess,
+      headers: {
+        "X-Requested-With": "XMLHttpRequest"
+      },
+      multiple: false,
+      "with-credentials": "",
+      "file-list": _vm.fileList,
+      "list-type": "picture-card",
+      action: "upload"
+    }
+  }, [_c("i", {
+    staticClass: "el-icon-plus"
+  })])], 1), _vm._v(" "), _c("span", {
     attrs: {
       slot: "footer"
     },

@@ -25,6 +25,7 @@ Route::group(['middleware' => 'auth'], function () {
     });
     Route::resource('phoneBook', PhoneBoookController::class);
     Route::resource('templateMessage', TemplateController::class);
+    Route::post('upload', [TemplateController::class, 'upload']);
     Route::post('sendWhatsapp', [WhatsAppController::class, 'sendWa']);
     Route::get('connect', [WhatsAppController::class, 'connect']);
 });

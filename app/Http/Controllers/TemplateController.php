@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TemplateMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class TemplateController extends Controller
 {
@@ -48,5 +49,22 @@ class TemplateController extends Controller
     {
         $templateMessage->delete();
         return ['data has been saved'];
+    }
+
+    public function upload(Request $request)
+    {
+        $request->validate(['file' => 'required|mimes:jpg,jpeg,png|max:3000']);
+        $path = $request->file('file')->store('public/' . date('Y/m/d'));
+
+        $data = [
+            'url' => url(Storage::url($path)),
+            'name' => $request->file->getClientOriginalName(),
+            'path' => $path,
+            'size' => $request->file->getSize(),
+            'mime' => $request->file->extension(),
+        ];
+
+
+        return $data;
     }
 }
