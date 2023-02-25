@@ -7407,14 +7407,14 @@ var render = function render() {
     _c = _vm._self._c;
   return _c("div", {
     staticClass: "text-center"
-  }, [_c("h1", [_vm._v("Scan here for connect")]), _vm._v(" "), _c("img", {
+  }, [_c("h1", [_vm._v("\n    " + _vm._s(_vm.data.message ? "Success" : "Scan here for connect Whatsapp") + "\n  ")]), _vm._v(" "), _c("img", {
     attrs: {
       src: _vm.data.image,
       alt: "Scan here for connect your whatsapp"
     }
-  }), _vm._v(" "), _vm.data.message == "Session found." ? _c("h3", {
+  }), _vm._v(" "), _vm.data.message ? _c("h3", {
     staticClass: "font-weight-bold tex-success"
-  }, [_vm._v("\n    Connected\n  ")]) : _vm._e()]);
+  }, [_vm._v("Connected")]) : _vm._e()]);
 };
 var staticRenderFns = [];
 render._withStripped = true;

@@ -15,8 +15,10 @@ class WhatsAppController extends Controller
     {
         $find = Http::get(env('URL_WA_SERVER') . '/sessions/status/' . Auth::user()->name);
         $cek = json_decode($find->getBody());
+        $status = false;
         if ($cek->success && isset($cek->data->status)) {
             if ($cek->data->status == 'authenticated') {
+                $status = true;
                 $image = asset('image/connect.png');
             } else {
                 $find = Http::delete(env('URL_WA_SERVER') . '/sessions/delete/' . Auth::user()->name);
@@ -27,7 +29,7 @@ class WhatsAppController extends Controller
         }
 
         $data = [];
-        $data['message'] = $cek->message;
+        $data['message'] = $status;
         $data['image'] = $image;
 
         return $data;

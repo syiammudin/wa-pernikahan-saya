@@ -1,13 +1,10 @@
 <template>
   <div class="text-center">
-    <h1>Scan here for connect</h1>
+    <h1>
+      {{ data.message ? "Success" : "Scan here for connect Whatsapp" }}
+    </h1>
     <img :src="data.image" alt="Scan here for connect your whatsapp" />
-    <h3
-      v-if="data.message == 'Session found.'"
-      class="font-weight-bold tex-success"
-    >
-      Connected
-    </h3>
+    <h3 v-if="data.message" class="font-weight-bold tex-success">Connected</h3>
   </div>
 </template>
 <script>
