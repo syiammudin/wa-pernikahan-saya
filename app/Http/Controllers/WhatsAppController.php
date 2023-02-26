@@ -75,7 +75,7 @@ class WhatsAppController extends Controller
 
 
                 dispatch(new SendBoxJobs(auth()->user(), $number, $body, $value->name, $text))->delay(now()->addSeconds($no));
-                $no = $no + 20;
+                $no = $no + 30;
             }
             return $no;
             return $data;

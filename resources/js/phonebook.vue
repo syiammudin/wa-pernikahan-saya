@@ -25,11 +25,13 @@
       </div>
       <table class="table table-bordered">
         <tr>
+          <th>No</th>
           <th>Name</th>
           <th>Phone</th>
           <th>#</th>
         </tr>
         <tr v-for="(item, index) in data" :key="index">
+          <td>{{ index + 1 }}</td>
           <td>{{ item.name }}</td>
           <td>{{ item.phone }}</td>
           <td>
